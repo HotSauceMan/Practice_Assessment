@@ -1,0 +1,124 @@
+---
+title: "Analysis_Data"
+author: "Ambar Mishra"
+date: "9/13/2020"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+```{r}
+install.packages("data.table", type="source")
+```
+
+
+```{r setup, include=FALSE}
+View(showwcase_sessions_new)
+```
+
+
+Here is a dataframe removing all the zeroes from the dataset. This will help in other forms of graphing to make sure all of the x and y values are finite. Removing all of the zeroes gives me the data set with heavily engaging viewers (the viewers who fully interact with the post in all aspects.)
+```{r}
+df1<- showwcase_sessions_new
+new_dataset_without_zeroes<-df1[!apply(df1[,9:14] == 0, 1, FUN = any, na.rm = TRUE),]
+View(new_dataset_without_zeroes)
+```
+
+
+```{r}
+plot(new_dataset_without_zeroes$session_duration, ylab='Duration of session')
+abline(v=15, col='red')
+```
+
+There are various amounts of points as there is clearly no correlation within this plot. I placed an abline in the center of the plot, however there is no clear center point in this plot. 
+
+
+
+
+
+
+
+
+```{r}
+library(ggplot2)
+
+```
+
+
+
+Here, I have subsetted the data for the time period from 10-21-19 till 10-30-19. 
+```{r}
+subsetted_new_data<- head(showwcase_sessions_new,100)
+View(subsetted_new_data)
+```
+
+Here is a density plot depicted the amount of projects added during this time period. 
+```{r}
+ggplot(subsetted_new_data, aes(x=session_projects_added))+
+  geom_density()
+```
+There is definitely a lot of curves in this graph meaning that there was a wide range of amounts for the session_projects added during this time period. A spike in the curve was located at 1, meaning that the most projects added at this time period was 1 project. 
+
+Let us see how this compares to the beginning of the month dataset:
+```{r}
+second_subsetted_data<- tail(showwcase_sessions_new,100)
+View(second_subsetted_data)
+```
+
+```{r}
+ggplot(second_subsetted_data, aes(x=session_projects_added))+
+  geom_density()
+```
+
+This time period is clearly a bit better than the first time period as the spike is towards the number 3. Meaning that there is a higher density at 3 so most users are adding 3 projects at this time period. In comparison to our previous graph, the beginning of the month seems to have a higher user engagment as more graphs are being added.
+
+
+Let us compare it to the overall graph of the month and see how the graphs may possible differ. 
+```{r}
+ggplot(showwcase_sessions_new, aes(x=session_projects_added))+
+  geom_density()
+```
+Here is the overall graph, as it seems that most viewers throughoug the month add an average of 3 projects. As this finding matches our density plot for the first week of the month, we can possibly predict that the beginning of the month maybe the peak of users posting their projects. 
+
+
+
+Let us see the overall session comments given throughout the entire month.
+```{r}
+ggplot(showwcase_sessions_new, aes(y=session_likes_given, x=session_duration, color= 'blue'))+
+  geom_point()
+
+
+```
+There is no correlation which means even spending 2,500 minutes on the website per month does NOT lead to a higher amount of likes given. 
+
+```{r}
+ggplot(showwcase_sessions_new, aes(y=session_comments_given, x=session_duration, color= 'blue'))+
+  geom_line()
+```
+Throughout the month, it is seen that users are more likely to only comment 20 times throughout the entire month when they spend between 500-1000 minutes on the website per month. Session duration clearly only affects commenting rather than likes.
+
+
+
+```{r}
+pie(table(showwcase_sessions_new$projects_added), main= 'Amounts of projects in the month of October')
+```
+
+Most people who browsed the website were publishing their project (nearly 75%). This is a positive statistic since users are mostly going on the website to upload their work. 
+
+
+```{r}
+barplot(table(showwcase_sessions_new$session_projects_added), col='blue', xlab='# of projects', ylab='Logged in entries' )
+```
+This is one way to see how the highest amount of projects users had added was only 1. Many viewers did not publish a project once they logged in, as the 0 bar is the second highest bar in this plot. 
+
+Another visualizing way to do this would be making a 3D pie chart. 
+```{r}
+library(plotrix)
+l<-c(1,2,3,4,5,6,7)
+pie3D(table(showwcase_sessions_new$session_projects_added),labels = l, main= 'Amounts of projects added in the month of October')
+```
+Throughout the month of October, users had mostly added only 1,2 or 3 projects. There was a smaller amount for 5,6 and 7 projects but nearly 20% did post 4 projects. Our users did have a great time.
+
+
+
+Thank you Showwcase for this wonderful opportunity. I hope these graphs were sufficient for my in depth analysis. This concludes my four hour testing period. 
