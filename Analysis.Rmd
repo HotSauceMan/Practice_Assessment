@@ -82,7 +82,7 @@ Here is the overall graph, as it seems that most viewers throughoug the month ad
 
 
 
-Let us see the overall session comments given throughout the entire month.
+Let us see the overall session likes given throughout the entire month.
 ```{r}
 ggplot(showwcase_sessions_new, aes(y=session_likes_given, x=session_duration, color= 'blue'))+
   geom_point()
